@@ -1,0 +1,27 @@
+Ticket Service Coding Challenge
+
+ASSUMPTIONS:
+1. The seating venue is implemented in memory
+2. In the current implementation, best seat is considered the seat in a row which is the closest to the stage, however
+the application is designed in a way that new ranking policies for seats can be easily plugged into the app
+
+
+INSTRUCTIONS:
+1. Check out the application: git clone https://github.com/aarbabshirani/walmart-prog-challenge.git
+2. Navigate to the "walmart-prog-challenge/walmart-programming-challenge" directory
+3. Build and run tests: mvn clean install
+4. The output is walmart-programming-challenge-0.0.1-SNAPSHOT.tar which goes into the target directory
+5. untar the file: tar -xvf walmart-programming-challenge-0.0.1-SNAPSHOT.tar
+6. Edit start.sh file to make sure it points to the right JAVA_HOME, by default JAVA_HOME is "/usr/java/latest"
+7. Edit /conf/conf.properties and specify number of rows, columns, and ticket hold expiry. 
+   Default values are rows=6, cols=7, seatHoldExpiry=20
+8. Run the app: sh start.sh
+9. Logs go under logs/walmart.log, to redirect logs to stdout, add "stdout" to conf/log4j.properties (log4j.rootLogger=INFO, A1, stdout)
+
+
+IMPROVMENTS FOR FUTURE:
+This app can be improved is several ways which are beyond the scope of this challenge such as:
+1. Add validation for user email
+2. Add a RESTFul API
+3. Add more unit tests to improve the code coverage
+4. Performance test
