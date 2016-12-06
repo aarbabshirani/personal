@@ -2,7 +2,12 @@ package com.walmart.ticket.service.process;
 
 import static org.junit.Assert.fail;
 
+import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,8 +22,8 @@ public class TicketServiceTreeImpTest {
 
 	public static final Logger LOGGER = Logger.getLogger(TicketServiceTreeImpTest.class);
 	private TicketServiceImp tested;
-	private String rows = "7";
-	private String cols = "10";
+	private String rows = "100";
+	private String cols = "1000";
 	private long seatHoldExpiry = 0;
 	private int total = 0;
 
@@ -121,6 +126,39 @@ public class TicketServiceTreeImpTest {
 		Assert.assertEquals(numSeatToRes, tested.reservedSeatsMap.get(reservation).getHeldSeats().size());
 	}
 	
+	@Test
+	public void test() {
+		ExecutorService executor = Executors.newFixedThreadPool(1000);
+
+		// holding 80000 seats using 1000 threads, Always 20000 seats should be left available
+		IntStream.range(0, 80000)
+	    .forEach(i -> executor.submit(this::findAndHoldSeats));
+
+		stop(executor);
+
+		Assert.assertEquals(20000, tested.numSeatsAvailable());
+		System.out.println(tested.numSeatsAvailable());
+	}
+	
+	public static void stop(ExecutorService executor) {
+        try {
+            executor.shutdown();
+            executor.awaitTermination(10, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e) {
+            System.err.println("interrupted");
+        }
+        finally {
+            if (!executor.isTerminated()) {
+                System.err.println("task is not finished, force killing the tasks");
+            }
+            executor.shutdownNow();
+        }
+    }
+	
+	public void findAndHoldSeats() {
+		tested.findAndHoldSeats(1, "abc@walmart.com");
+	}
 	
 
 }
